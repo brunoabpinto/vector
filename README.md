@@ -4,21 +4,6 @@ Vue reactivity in Blade templates using a familiar `<script setup>` syntax.
 
 ## Installation
 
-Add the package to your `composer.json` repositories:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/vector"
-        }
-    ]
-}
-```
-
-Then require the package:
-
 ```bash
 composer require brunoabpinto/vector
 ```
@@ -64,14 +49,13 @@ Use the `@vector` directive to add Vue reactivity to your Blade templates:
 ```blade
 @vector
     <script setup>
-        import { ref } from 'vue';
         const count = ref(0);
     </script>
 @endvector
 
 <div>
     <button @click="count++">Click me</button>
-    <p>Count: <span v-text="count"></span></p>
+    <p>Count: @{{ count}}</p>
 </div>
 ```
 
@@ -89,7 +73,6 @@ You can use multiple `@vector` blocks on the same page:
 ```blade
 @vector
     <script setup>
-        import { ref } from 'vue';
         const name = ref('World');
     </script>
 @endvector
@@ -101,7 +84,6 @@ You can use multiple `@vector` blocks on the same page:
 
 @vector
     <script setup>
-        import { ref, computed } from 'vue';
         const items = ref(['Apple', 'Banana', 'Cherry']);
         const count = computed(() => items.value.length);
     </script>
@@ -109,7 +91,7 @@ You can use multiple `@vector` blocks on the same page:
 
 <ul>
     <li v-for="item in items" v-text="item"></li>
-    <p>Total: <span v-text="count"></span> items</p>
+    <p>Total: @{{ count }} items</p>
 </ul>
 ```
 
