@@ -20,7 +20,7 @@ Add the package to your `composer.json` repositories:
 Then require the package:
 
 ```bash
-composer require brunopinto/vector
+composer require brunoabpinto/vector
 ```
 
 ### Frontend Setup
@@ -34,7 +34,7 @@ npm install vue
 Update your `vite.config.js` to use Vue's runtime compiler:
 
 ```js
-import vue from '@vitejs/plugin-vue';
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
     plugins: [
@@ -43,7 +43,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            'vue': 'vue/dist/vue.esm-bundler.js',
+            vue: "vue/dist/vue.esm-bundler.js",
         },
     },
 });
@@ -52,7 +52,7 @@ export default defineConfig({
 Expose Vue globally in your `resources/js/app.js`:
 
 ```js
-import * as Vue from 'vue';
+import * as Vue from "vue";
 
 window.Vue = Vue;
 ```

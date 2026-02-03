@@ -1,5 +1,5 @@
 {
-    "name": "brunopinto/vector",
+    "name": "brunoabpinto/vector",
     "description": "Vue reactivity in Blade templates using a familiar script setup syntax",
     "type": "library",
     "license": "MIT",
