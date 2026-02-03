@@ -55,7 +55,7 @@ Use the `@vector` directive to add Vue reactivity to your Blade templates:
 
 <div>
     <button @click="count++">Click me</button>
-    <p>Count: @{{ count}}</p>
+    <p>Count: @{{ count }}</p>
 </div>
 ```
 
