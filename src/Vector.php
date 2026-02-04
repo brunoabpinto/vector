@@ -5,52 +5,39 @@ namespace Vector;
 class Vector
 {
     /**
-     * Render a vector component with script setup support.
+     * Transform all <script setup> blocks into template markers.
      */
-    public static function render(string $id, string $content): string
+    public static function transform(string $content): string
     {
-        // Extract script setup content
-        $scriptContent = '';
-        if (preg_match('/<script\s+setup[^>]*>(.*?)<\/script>/s', $content, $matches)) {
-            $scriptContent = trim($matches[1]);
-            // Remove import statements - they'll be provided globally
-            $scriptContent = preg_replace('/import\s*\{[^}]+\}\s*from\s*[\'"]vue[\'"];?\s*/s', '', $scriptContent);
-        }
+        return preg_replace_callback(
+            '/<script\s+setup[^>]*>(.*?)<\/script>/s',
+            function ($matches) {
+                $id = 'vector-'.uniqid();
+                $scriptContent = trim($matches[1]);
 
-        // Extract variable names from const/let/var declarations
-        preg_match_all('/(?:const|let|var)\s+(\w+)\s*=/', $scriptContent, $varMatches);
-        $variables = $varMatches[1] ?? [];
-        $returnObject = implode(', ', $variables);
+                // Remove import statements - they'll be provided globally
+                $scriptContent = preg_replace('/import\s*\{[^}]+\}\s*from\s*[\'"]vue[\'"];?\s*/s', '', $scriptContent);
+                $scriptContent = trim($scriptContent);
 
-        return <<<HTML
-        <script data-vector="{$id}">
-        (function(__script) {
-            function __mount() {
-                const { createApp, ref, reactive, computed, watch, watchEffect, onMounted, onUnmounted, nextTick } = window.Vue;
+                // Extract variable names from const/let/var declarations
+                preg_match_all('/(?:const|let|var)\s+(\w+)\s*=/', $scriptContent, $varMatches);
+                $variables = $varMatches[1] ?? [];
+                $varsJson = json_encode($variables);
 
-                {$scriptContent}
+                // Encode script content for safe embedding
+                $encodedScript = htmlspecialchars($scriptContent, ENT_QUOTES, 'UTF-8');
 
-                const __vectorEl = __script.nextElementSibling;
-                if (__vectorEl) {
-                    createApp({
-                        setup() {
-                            return { {$returnObject} };
-                        }
-                    }).mount(__vectorEl);
-                }
-            }
+                return "<template data-vector=\"{$id}\" data-vector-vars='{$varsJson}'>{$encodedScript}</template>";
+            },
+            $content
+        );
+    }
 
-            function __waitForVue() {
-                if (window.Vue) {
-                    __mount();
-                } else {
-                    requestAnimationFrame(__waitForVue);
-                }
-            }
-
-            __waitForVue();
-        })(document.currentScript);
-        </script>
-        HTML;
+    /**
+     * Get the Vector runtime script.
+     */
+    public static function runtime(): string
+    {
+        return \Illuminate\Support\Facades\Vite::__invoke(['resources/js/vendor/vector.js'])->toHtml();
     }
 }

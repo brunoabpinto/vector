@@ -1,23 +1,10 @@
+<!-- @format -->
+
 # Vector
 
-Vue reactivity in Blade templates using a familiar `<script setup>` syntax.
+Vue reactivity in Blade templates using a simple `<script setup>` tag.
 
 ## Installation
-
-Add the package to your `composer.json` repositories:
-
-```json
-{
-    "repositories": [
-        {
-            "type": "path",
-            "url": "packages/vector"
-        }
-    ]
-}
-```
-
-Then require the package:
 
 ```bash
 composer require brunoabpinto/vector
@@ -31,86 +18,79 @@ Install Vue:
 npm install vue
 ```
 
-Update your `vite.config.js` to use Vue's runtime compiler:
+Add Vector to your Vite entry points in `vite.config.js`:
 
 ```js
-import vue from "@vitejs/plugin-vue";
-
 export default defineConfig({
-    plugins: [
-        vue(),
-        // ... other plugins
-    ],
-    resolve: {
-        alias: {
-            vue: "vue/dist/vue.esm-bundler.js",
-        },
+  plugins: [
+    laravel({
+      input: [
+        "resources/css/app.css",
+        "resources/js/app.js",
+        "resources/js/vendor/vector.js",
+      ],
+      refresh: true,
+    }),
+  ],
+  resolve: {
+    alias: {
+      vue: "vue/dist/vue.esm-bundler.js",
     },
+  },
 });
 ```
 
-Expose Vue globally in your `resources/js/app.js`:
+Add `@vectorJs` before your closing `</body>` tag in your layout:
 
-```js
-import * as Vue from "vue";
+```blade
+<body>
+    {{ $slot }}
 
-window.Vue = Vue;
+    @vectorJs
+</body>
 ```
 
 ## Usage
 
-Use the `@vector` directive to add Vue reactivity to your Blade templates:
+Use the `<script setup>` tag to add Vue reactivity to your Blade templates:
 
 ```blade
-@vector
-    <script setup>
-        import { ref } from 'vue';
-        const count = ref(0);
-    </script>
-@endvector
+<script setup>
+    const i = ref(0);
+</script>
 
 <div>
-    <button @click="count++">Click me</button>
-    <p>Count: <span v-text="count"></span></p>
+    <button @click="i++">Click Me</button>
+    <div>
+        Count: @{{ i }}
+    </div>
+    <div v-if="i > 5">Success!</div>
 </div>
 ```
 
 ### How it works
 
-1. The `@vector` directive captures your `<script setup>` block
+1. The `<script setup>` tag is transformed at compile time
 2. It extracts variable declarations and auto-returns them to the template
-3. Vue mounts on the next sibling element after the directive
+3. Vue mounts on the **next sibling element** after the script—anything outside that element is not parsed by Vector
 4. All Vue Composition API functions are available: `ref`, `reactive`, `computed`, `watch`, `onMounted`, etc.
 
-### Multiple components
+### Escaping Blade Syntax
 
-You can use multiple `@vector` blocks on the same page:
+Since Blade also uses `{{ }}`, prefix Vue's mustache syntax with `@` to prevent Blade from processing it:
 
 ```blade
-@vector
-    <script setup>
-        import { ref } from 'vue';
-        const name = ref('World');
-    </script>
-@endvector
+{{-- Blade --}}
+{{ $phpVariable }}
 
-<div>
-    <input v-model="name" />
-    <p>Hello, <span v-text="name"></span>!</p>
-</div>
+{{-- Vue (note the @) --}}
+@{{ vueVariable }}
+```
 
-@vector
-    <script setup>
-        import { ref, computed } from 'vue';
-        const items = ref(['Apple', 'Banana', 'Cherry']);
-        const count = computed(() => items.value.length);
-    </script>
-@endvector
+Or use Vue directives like `v-text`:
 
-<ul>
-    <li v-for="item in items" v-text="item"></li>
-    <p>Total: <span v-text="count"></span> items</p>
-</ul>
+```blade
+<span v-text="count"></span>
 ```
 
 ## License
