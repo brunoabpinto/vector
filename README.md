@@ -55,6 +55,7 @@ Add `@vectorJs` before your closing `</body>` tag in your layout:
 Use the `<script setup>` tag to add Vue reactivity to your Blade templates:
 
 ```blade
+<<<<<<< HEAD
 <script setup>
     const i = ref(0);
 </script>
@@ -65,6 +66,17 @@ Use the `<script setup>` tag to add Vue reactivity to your Blade templates:
         Count: @{{ i }}
     </div>
     <div v-if="i > 5">Success!</div>
+=======
+@vector
+    <script setup>
+        const count = ref(0);
+    </script>
+@endvector
+
+<div>
+    <button @click="count++">Click me</button>
+    <p>Count: @{{ count }}</p>
+>>>>>>> 14fae173e732bbd7e3b13e6ee1cb90e45e3764df
 </div>
 ```
 
@@ -80,17 +92,39 @@ Use the `<script setup>` tag to add Vue reactivity to your Blade templates:
 Since Blade also uses `{{ }}`, prefix Vue's mustache syntax with `@` to prevent Blade from processing it:
 
 ```blade
+<<<<<<< HEAD
 {{-- Blade --}}
 {{ $phpVariable }}
+=======
+@vector
+    <script setup>
+        const name = ref('World');
+    </script>
+@endvector
+>>>>>>> 14fae173e732bbd7e3b13e6ee1cb90e45e3764df
 
 {{-- Vue (note the @) --}}
 @{{ vueVariable }}
 ```
 
+<<<<<<< HEAD
 Or use Vue directives like `v-text`:
 
 ```blade
 <span v-text="count"></span>
+=======
+@vector
+    <script setup>
+        const items = ref(['Apple', 'Banana', 'Cherry']);
+        const count = computed(() => items.value.length);
+    </script>
+@endvector
+
+<ul>
+    <li v-for="item in items" v-text="item"></li>
+    <p>Total: @{{ count }} items</p>
+</ul>
+>>>>>>> 14fae173e732bbd7e3b13e6ee1cb90e45e3764df
 ```
 
 ## License
