@@ -1,6 +1,6 @@
 <!-- @format -->
 
-![logo](logo.svg)
+![logo](logo.png)
 
 # Vector
 
