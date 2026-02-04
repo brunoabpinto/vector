@@ -24,10 +24,10 @@ class Vector
                 $variables = $varMatches[1] ?? [];
                 $varsJson = json_encode($variables);
 
-                // Encode script content for safe embedding
-                $encodedScript = htmlspecialchars($scriptContent, ENT_QUOTES, 'UTF-8');
+                // Base64 encode script content for safe embedding
+                $encodedScript = base64_encode($scriptContent);
 
-                return "<template data-vector=\"{$id}\" data-vector-vars='{$varsJson}'>{$encodedScript}</template>";
+                return "<template data-vector=\"{$id}\" data-vector-vars='{$varsJson}' data-vector-script=\"{$encodedScript}\"></template>";
             },
             $content
         );

@@ -27,7 +27,7 @@ const {
 } = Vue;
 
 document.querySelectorAll('template[data-vector]').forEach((template) => {
-    const scriptContent = template.innerHTML;
+    const scriptContent = atob(template.dataset.vectorScript);
     const vars = JSON.parse(template.dataset.vectorVars || '[]');
     const mountEl = template.nextElementSibling;
 
