@@ -1,5 +1,7 @@
 <!-- @format -->
 
+![logo](logo.svg)
+
 # Vector
 
 Vue reactivity in Blade templates using a simple `<script setup>` tag.
